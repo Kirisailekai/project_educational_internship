@@ -1,13 +1,13 @@
-# Используем официальный образ OpenJDK с Maven для сборки
-FROM maven:3.9.6-openjdk-23-slim AS builder
+# Этап сборки с Maven и JDK 23
+FROM maven:3.9.6-openjdk-17-slim AS builder
 
 # Устанавливаем рабочую директорию для сборки
 WORKDIR /app
 
-# Копируем pom.xml и файлы зависимостей (для кеширования слоев)
+# Копируем pom.xml и загружаем зависимости (для кеширования слоев)
 COPY pom.xml .
 
-# Скачиваем зависимости (они будут закешированы, если pom.xml не изменяется)
+# Скачиваем зависимости (кешируем, если pom.xml не изменен)
 RUN mvn dependency:go-offline
 
 # Копируем исходный код в контейнер
@@ -16,8 +16,8 @@ COPY src ./src
 # Собираем приложение
 RUN mvn clean package -DskipTests
 
-# Используем более легкий образ для работы приложения
-FROM openjdk:17-jdk-slim
+# Используем образ OpenJDK 23 для финального приложения
+FROM openjdk:23-jdk-slim
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
