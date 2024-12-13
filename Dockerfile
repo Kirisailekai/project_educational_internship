@@ -1,28 +1,14 @@
-# Этап сборки
-FROM maven:3.9.6-eclipse-temurin-17 AS builder
+# Используем образ OpenJDK 23 для финального приложения
+FROM openjdk:23-jdk-slim
 
-# Устанавливаем рабочую директорию
+# Устанавливаем рабочую директорию для финального приложения
 WORKDIR /app
 
-# Копируем pom.xml и скачиваем зависимости
-COPY pom.xml .
-RUN mvn dependency:go-offline
+# Копируем собранный JAR файл в контейнер
+COPY target/*.jar app.jar
 
-# Копируем исходный код и собираем приложение
-COPY src ./src
-RUN mvn clean package -DskipTests
-
-# Этап запуска
-FROM eclipse-temurin:17-jdk
-
-# Устанавливаем рабочую директорию
-WORKDIR /app
-
-# Копируем JAR файл из этапа сборки
-COPY --from=builder /app/target/*.jar app.jar
-
-# Открываем порт 8080
+# Открываем порт 8080 для приложения
 EXPOSE 8080
 
-
+# Запускаем приложение
 ENTRYPOINT ["java", "-jar", "app.jar"]
