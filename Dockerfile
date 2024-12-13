@@ -1,5 +1,5 @@
 # Используем официальный образ OpenJDK с Maven для сборки
-FROM maven:4.0.0-openjdk-23-slim AS builder
+FROM maven:3.9.6-openjdk-23-slim AS builder
 
 # Устанавливаем рабочую директорию для сборки
 WORKDIR /app
