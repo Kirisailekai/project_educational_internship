@@ -10,6 +10,6 @@ public class HomeController {
     @GetMapping("/")
     @ResponseBody
     public String home() {
-        return "Welcome to your deployed application!";
+        return "Хочешь молока?";
     }
 }
